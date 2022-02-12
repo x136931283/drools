@@ -1,0 +1,36 @@
+package boook.discount
+
+import com.tianblogs.drools.entity.Order
+
+//规则一：所购图书总价在100元以下的没有优惠
+rule "boook_discount_1"
+    when
+        $order:Order(originalPrice <100) //模式匹配，到规则引擎中（工作内存）查找Order对象 $order是起的名字
+    then
+        $order.setRealPrice($order.getOriginalPrice());
+        System.out.println("成功匹配到规则1");
+end
+//规则二：所购图书总价在100到200元的优惠20元
+rule "boook_discount_2"
+    when
+        $order:Order(originalPrice >= 100 && originalPrice<200) //模式匹配，到规则引擎中（工作内存）查找Order对象 $order是起的名字
+    then
+        $order.setRealPrice($order.getOriginalPrice()-20);
+        System.out.println("成功匹配到规则2");
+end
+//规则三：所购图书总价在200到300元的优惠50元
+rule "boook_discount_3"
+    when
+        $order:Order(originalPrice >= 200 && originalPrice<300) //模式匹配，到规则引擎中（工作内存）查找Order对象 $order是起的名字
+    then
+        $order.setRealPrice($order.getOriginalPrice()-50);
+        System.out.println("成功匹配到规则3");
+end
+//规则四：所购图书总价在300元以上的优惠100元
+rule "book_discount_4"
+    when
+        $order:Order(originalPrice >= 300)
+    then
+        $order.setRealPrice($order.getOriginalPrice() - 100);
+        System.out.println("成功匹配到规则四：所购图书总价在300元以上的优惠100元");
+end

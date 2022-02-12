@@ -1,0 +1,62 @@
+//当前规则文件用于测试Drools内置方法
+package student
+import com.tianblogs.drools.entity.Student
+
+//当前规则用于测试retract内置方法 默认的优先级，从上倒下
+rule "要求Student的等于10岁 用于删除"
+    salience 10 //设置优先级 值越大越优先
+    enabled false //设置规则不启动
+    dialect "java" //当前规则启动的语言，java或则是 mvel 。默认是 java
+    no-loop true // 防止死循环  默认为 false
+    activation-group "mygroup" //设置及分组 用一个分组只能出发一个 按优先级执行
+    when
+        $student:Student(age == 10)
+    then
+        retract($student) //retract 删除工作内存中的 Fact 对象，会导致相关的规则重新匹配
+        System.out.println("规则 要求Student的等于10岁 用于删除");
+end
+
+
+
+//当前规则用于测试instart内置方法
+rule "要求Student的等于10岁"
+    activation-group "mygroup" //设置及分组 用一个分组只能出发一个 按优先级执行
+    when
+        $student:Student(age == 10)
+    then
+        Student s  = new Student();
+        s.setAge(5);
+        insert(s); //insert向工作内存中插入 Fact 对象，会导致相关的规则重新匹配
+        System.out.println("规则 要求Student的等于10岁");
+end
+
+
+//当前规则用于测试update内置方法
+rule "要求Student的age小于10岁"
+    when
+        $student:Student(age < 10)
+    then
+        $student.setAge(15);
+        update($student);//update方法用于更新Fact对象，会导致相关的规则重新匹配
+        System.out.println("规则 要求Student的age小于10岁");
+end
+
+//当前规则用于测试update内置方法
+rule "要求Student的age大于10岁并且小于20岁"
+    when
+        $student:Student(age > 10 && age < 20)
+    then
+        $student.setAge(25);
+        update($student);//update方法用于更新Fact对象，会导致相关的规则重新匹配
+        System.out.println("规则 要要求Student的age大于10岁并且小于20岁");
+end
+
+//当前规则用于测试update内置方法
+rule "要求Student的age大于20岁"
+    when
+        $student:Student(age > 20)
+    then
+        //$student.setAge(15);
+        System.out.println("规则 要求Student的age大于20岁");
+end
+
